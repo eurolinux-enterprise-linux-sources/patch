@@ -1,7 +1,7 @@
 Summary: Utility for modifying/upgrading files
 Name: patch
 Version: 2.6
-Release: 6%{?dist}
+Release: 8%{?dist}
 License: GPLv2+
 URL: http://www.gnu.org/software/patch/patch.html
 Group: Development/Tools
@@ -9,10 +9,13 @@ Source: ftp://ftp.gnu.org/gnu/patch/patch-%{version}.tar.xz
 Patch1: patch-2.5.4-sigsegv.patch
 Patch2: patch-best-name.patch
 Patch3: patch-get-arg.patch
+Patch4: patch-2.6-CVE-2018-1000156.patch
+Patch5: patch-2.6-signed-overflow.patch
 Patch100: patch-selinux.patch
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: libselinux-devel
+BuildRequires: automake autoconf
 
 %description
 The patch program applies diff files to originals.  The diff command
@@ -37,11 +40,18 @@ applications.
 # Fixed argument type for --get (bug #618216).
 %patch3 -p1 -b .get-arg
 
+# CVE-2018-1000156 - Malicious patch files cause ed to execute arbitrary commands
+%patch4 -p1 -b .CVE-2018-1000156
+
+# fix year overflow issue
+%patch5 -p1 -b .signed-overflow
+
 # SELinux support.
 %patch100 -p1 -b .selinux
 
 %build
 CFLAGS="$RPM_OPT_FLAGS -D_GNU_SOURCE"
+autoreconf
 %configure
 
 make %{?smp_mflags}
@@ -63,6 +73,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/*/*
 
 %changelog
+* Tue Apr 17 2018 Than Ngo <than@redhat.com> - 2.6-8
+- Fixed year overflow detected in rpmdiff
+
+* Mon Apr 09 2018 Than Ngo <than@redhat.com> - 2.6-7
+- Fixed CVE-2018-1000156 - Malicious patch files cause ed to execute arbitrary commands
+
 * Mon Aug 16 2010 Tim Waugh <twaugh@redhat.com> 2.6-6
 - Another fix for the selinux patch (bug #618215).
 
@@ -258,7 +274,7 @@ rm -rf $RPM_BUILD_ROOT
 * Tue Apr 07 1998 Cristian Gafton <gafton@redhat.com>
 - added buildroot
 
-* Wed Oct 21 1997 Cristian Gafton <gafton@redhat.com>
+* Tue Oct 21 1997 Cristian Gafton <gafton@redhat.com>
 - updated to 2.5
 
 * Mon Jun 02 1997 Erik Troan <ewt@redhat.com>
