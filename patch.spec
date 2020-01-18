@@ -1,7 +1,7 @@
 Summary: Utility for modifying/upgrading files
 Name: patch
 Version: 2.7.1
-Release: 6%{?dist}
+Release: 8%{?dist}
 License: GPLv3+
 URL: http://www.gnu.org/software/patch/patch.html
 Group: Development/Tools
@@ -66,6 +66,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/*/*
 
 %changelog
+* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 2.7.1-8
+- Mass rebuild 2014-01-24
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 2.7.1-7
+- Mass rebuild 2013-12-27
+
 * Wed Jun 12 2013 Tim Waugh <twaugh@redhat.com> 2.7.1-6
 - Don't segfault when given bad arguments (bug #972330).
 
