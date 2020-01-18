@@ -3,7 +3,7 @@
 Summary: Utility for modifying/upgrading files
 Name: patch
 Version: 2.7.1
-Release: 11%{?dist}
+Release: 12%{?dist}
 License: GPLv3+
 URL: http://www.gnu.org/software/patch/patch.html
 Group: Development/Tools
@@ -15,6 +15,9 @@ Patch4: patch-2.7.1-CVE-2018-1000156.patch
 Patch5: patch-2.7.1-CVE-2016-10713.patch
 Patch6: patch-2.7.1-CVE-2018-6952.patch
 Patch7: patch-2.7.1-newmode.patch
+# CVE-2018-20969, Invoke ed directly instead of using the shell
+Patch8: patch-2.7.x-CVE-2018-20969.patch
+# Selinux
 Patch100: patch-selinux.patch
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -59,6 +62,9 @@ applications.
 # honor the new file mode
 %patch7 -p1 -b .newmode
 
+# CVE-2018-20969, Invoke ed directly instead of using the shell
+%patch8 -p1 -b .CVE-2018-20969
+
 # SELinux support.
 %patch100 -p1 -b .selinux
 
@@ -87,6 +93,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/*/*
 
 %changelog
+* Mon Sep 02 2019 Than Ngo <than@redhat.com> - 2.7.1-12
+- Fixed CVE-2018-20969, invoke ed directly instead of using the shell
+
 * Thu Nov 22 2018 Than Ngo <than@redhat.com> - 2.7.1-11
 - Fixed CVE-2016-10713 - Out-of-bounds access in pch_write_line function 
 - Fixed CVE-2018-6952 - Double free of memory
