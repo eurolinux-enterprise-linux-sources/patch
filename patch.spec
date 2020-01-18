@@ -1,7 +1,9 @@
+%global gnulib_ver 20120926
+
 Summary: Utility for modifying/upgrading files
 Name: patch
 Version: 2.7.1
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: GPLv3+
 URL: http://www.gnu.org/software/patch/patch.html
 Group: Development/Tools
@@ -10,6 +12,9 @@ Patch1: patch-remove-empty-dir.patch
 Patch2: patch-args.patch
 Patch3: patch-args-segfault.patch
 Patch4: patch-2.7.1-CVE-2018-1000156.patch
+Patch5: patch-2.7.1-CVE-2016-10713.patch
+Patch6: patch-2.7.1-CVE-2018-6952.patch
+Patch7: patch-2.7.1-newmode.patch
 Patch100: patch-selinux.patch
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -17,6 +22,8 @@ BuildRequires: libselinux-devel
 BuildRequires: libattr-devel
 BuildRequires: ed
 BuildRequires: automake autoconf
+
+Provides: bundled(gnulib) = %{gnulib_ver}
 
 %description
 The patch program applies diff files to originals.  The diff command
@@ -42,6 +49,15 @@ applications.
 
 # CVE-2018-1000156, Malicious patch files cause ed to execute arbitrary commands
 %patch4 -p1 -b .CVE-2018-1000156
+
+# CVE-2016-10713, Out-of-bounds access in pch_write_line function
+%patch5 -p1 -b .CVE-2016-10713
+
+# CVE-2018-6952, Double free of memory
+%patch6 -p1 -b .CVE-2018-6952
+
+# honor the new file mode
+%patch7 -p1 -b .newmode
 
 # SELinux support.
 %patch100 -p1 -b .selinux
@@ -71,6 +87,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/*/*
 
 %changelog
+* Thu Nov 22 2018 Than Ngo <than@redhat.com> - 2.7.1-11
+- Fixed CVE-2016-10713 - Out-of-bounds access in pch_write_line function 
+- Fixed CVE-2018-6952 - Double free of memory
+- Resolves: #1626473, honor new file mode 100755 when applying patches
+- Resolves: #1653294, Added virtual provides for bundled gnulib library
+
 * Fri Apr 13 2018 Than Ngo <than@redhat.com> - 2.7.1-10
 - Fixed Coverity reported issues
 

@@ -1,0 +1,16 @@
+diff -up patch-2.7.1/src/patch.c.newmode patch-2.7.1/src/patch.c
+--- patch-2.7.1/src/patch.c.newmode	2018-11-26 15:23:49.990764455 +0100
++++ patch-2.7.1/src/patch.c	2018-11-26 15:27:55.307567239 +0100
+@@ -560,8 +560,11 @@ main (int argc, char **argv)
+ 			}
+ 
+ 		      if (inerrno)
+-			set_file_attributes (TMPOUTNAME, attr, NULL, NULL,
++			{
++			  if (set_mode) attr |= FA_MODE;
++			  set_file_attributes (TMPOUTNAME, attr, NULL, NULL,
+ 					     mode, &new_time);
++			}
+ 		      else
+ 			{
+ 			  attr |= FA_IDS | FA_MODE | FA_XATTRS;

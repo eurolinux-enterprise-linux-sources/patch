@@ -1,6 +1,6 @@
 diff -up patch-2.7.1/src/common.h.selinux patch-2.7.1/src/common.h
---- patch-2.7.1/src/common.h.selinux	2012-09-28 15:00:04.000000000 +0100
-+++ patch-2.7.1/src/common.h	2012-10-18 17:53:43.735748614 +0100
+--- patch-2.7.1/src/common.h.selinux	2012-09-28 16:00:04.000000000 +0200
++++ patch-2.7.1/src/common.h	2018-11-26 15:41:05.747151852 +0100
 @@ -30,6 +30,8 @@
  #include <sys/types.h>
  #include <time.h>
@@ -19,8 +19,8 @@ diff -up patch-2.7.1/src/common.h.selinux patch-2.7.1/src/common.h
  XTERN bool posixly_correct;
  
 diff -up patch-2.7.1/src/inp.c.selinux patch-2.7.1/src/inp.c
---- patch-2.7.1/src/inp.c.selinux	2012-09-19 02:07:31.000000000 +0100
-+++ patch-2.7.1/src/inp.c	2012-10-18 17:53:43.736748619 +0100
+--- patch-2.7.1/src/inp.c.selinux	2012-09-19 03:07:31.000000000 +0200
++++ patch-2.7.1/src/inp.c	2018-11-26 15:41:05.747151852 +0100
 @@ -138,7 +138,7 @@ get_input_file (char const *filename, ch
      char *getbuf;
  
@@ -48,8 +48,8 @@ diff -up patch-2.7.1/src/inp.c.selinux patch-2.7.1/src/inp.c
      else if (! ((S_ISREG (file_type) || S_ISLNK (file_type))
  	        && (file_type & S_IFMT) == (instat.st_mode & S_IFMT)))
 diff -up patch-2.7.1/src/Makefile.am.selinux patch-2.7.1/src/Makefile.am
---- patch-2.7.1/src/Makefile.am.selinux	2012-09-14 10:15:41.000000000 +0100
-+++ patch-2.7.1/src/Makefile.am	2012-10-18 17:53:43.736748619 +0100
+--- patch-2.7.1/src/Makefile.am.selinux	2012-09-14 11:15:41.000000000 +0200
++++ patch-2.7.1/src/Makefile.am	2018-11-26 15:41:05.747151852 +0100
 @@ -34,7 +34,7 @@ patch_SOURCES = \
  
  AM_CPPFLAGS = -I$(top_builddir)/lib -I$(top_srcdir)/lib
@@ -60,8 +60,8 @@ diff -up patch-2.7.1/src/Makefile.am.selinux patch-2.7.1/src/Makefile.am
  if ENABLE_MERGE
    patch_SOURCES += merge.c
 diff -up patch-2.7.1/src/Makefile.in.selinux patch-2.7.1/src/Makefile.in
---- patch-2.7.1/src/Makefile.in.selinux	2012-09-28 17:41:31.000000000 +0100
-+++ patch-2.7.1/src/Makefile.in	2012-10-18 17:53:43.736748619 +0100
+--- patch-2.7.1/src/Makefile.in.selinux	2012-09-28 18:41:31.000000000 +0200
++++ patch-2.7.1/src/Makefile.in	2018-11-26 15:41:05.748151855 +0100
 @@ -981,7 +981,7 @@ patch_SOURCES = bestmatch.h common.h inp
  AM_CPPFLAGS = -I$(top_builddir)/lib -I$(top_srcdir)/lib \
  	$(am__append_2)
@@ -72,9 +72,9 @@ diff -up patch-2.7.1/src/Makefile.in.selinux patch-2.7.1/src/Makefile.in
  all: all-am
  
 diff -up patch-2.7.1/src/patch.c.selinux patch-2.7.1/src/patch.c
---- patch-2.7.1/src/patch.c.selinux	2012-09-28 11:43:12.000000000 +0100
-+++ patch-2.7.1/src/patch.c	2012-10-18 17:57:41.708586721 +0100
-@@ -256,19 +256,19 @@ main (int argc, char **argv)
+--- patch-2.7.1/src/patch.c.selinux	2018-11-26 15:41:05.746151849 +0100
++++ patch-2.7.1/src/patch.c	2018-11-26 15:42:11.784367497 +0100
+@@ -257,19 +257,19 @@ main (int argc, char **argv)
  	  if (! strcmp (inname, outname))
  	    {
  	      if (inerrno == -1)
@@ -97,8 +97,8 @@ diff -up patch-2.7.1/src/patch.c.selinux patch-2.7.1/src/patch.c
  		  inerrno = -1;
  		}
  	      if (! outerrno)
-@@ -563,7 +563,7 @@ main (int argc, char **argv)
- 					     mode, &new_time);
+@@ -567,7 +567,7 @@ main (int argc, char **argv)
+ 			}
  		      else
  			{
 -			  attr |= FA_IDS | FA_MODE | FA_XATTRS;
@@ -106,7 +106,7 @@ diff -up patch-2.7.1/src/patch.c.selinux patch-2.7.1/src/patch.c
  			  set_file_attributes (TMPOUTNAME, attr, inname, &instat,
  					       mode, &new_time);
  			}
-@@ -623,7 +623,7 @@ main (int argc, char **argv)
+@@ -627,7 +627,7 @@ main (int argc, char **argv)
  			struct stat oldst;
  			int olderrno;
  
@@ -115,7 +115,7 @@ diff -up patch-2.7.1/src/patch.c.selinux patch-2.7.1/src/patch.c
  			if (olderrno && olderrno != ENOENT)
  			  write_fatal ();
  		        if (! olderrno && lookup_file_id (&oldst) == CREATED)
-@@ -1749,7 +1749,7 @@ delete_file_later (const char *name, con
+@@ -1754,7 +1754,7 @@ delete_file_later (const char *name, con
  
    if (! st)
      {
@@ -125,8 +125,8 @@ diff -up patch-2.7.1/src/patch.c.selinux patch-2.7.1/src/patch.c
        st = &st_tmp;
      }
 diff -up patch-2.7.1/src/pch.c.selinux patch-2.7.1/src/pch.c
---- patch-2.7.1/src/pch.c.selinux	2012-09-22 18:44:33.000000000 +0100
-+++ patch-2.7.1/src/pch.c	2012-10-18 18:04:28.619008832 +0100
+--- patch-2.7.1/src/pch.c.selinux	2018-11-26 15:41:05.744151842 +0100
++++ patch-2.7.1/src/pch.c	2018-11-26 15:41:05.749151858 +0100
 @@ -1,6 +1,6 @@
  /* reading patches */
  
@@ -135,7 +135,7 @@ diff -up patch-2.7.1/src/pch.c.selinux patch-2.7.1/src/pch.c
  
     Copyright (C) 1990-1993, 1997-2003, 2006, 2009-2012 Free Software
     Foundation, Inc.
-@@ -293,7 +293,7 @@ there_is_another_patch (bool need_header
+@@ -294,7 +294,7 @@ there_is_another_patch (bool need_header
  	  {
  	    inname = savebuf (buf, t - buf);
  	    inname[t - buf - 1] = 0;
@@ -144,7 +144,7 @@ diff -up patch-2.7.1/src/pch.c.selinux patch-2.7.1/src/pch.c
  	    if (inerrno)
  	      {
  		perror (inname);
-@@ -468,6 +468,7 @@ intuit_diff_type (bool need_header, mode
+@@ -469,6 +469,7 @@ intuit_diff_type (bool need_header, mode
      bool extended_headers = false;
      enum nametype i;
      struct stat st[3];
@@ -152,7 +152,7 @@ diff -up patch-2.7.1/src/pch.c.selinux patch-2.7.1/src/pch.c
      int stat_errno[3];
      int version_controlled[3];
      enum diff retval;
-@@ -507,6 +508,7 @@ intuit_diff_type (bool need_header, mode
+@@ -508,6 +509,7 @@ intuit_diff_type (bool need_header, mode
      version_controlled[OLD] = -1;
      version_controlled[NEW] = -1;
      version_controlled[INDEX] = -1;
@@ -160,7 +160,7 @@ diff -up patch-2.7.1/src/pch.c.selinux patch-2.7.1/src/pch.c
      p_rfc934_nesting = 0;
      p_timestamp[OLD].tv_sec = p_timestamp[NEW].tv_sec = -1;
      p_says_nonexistent[OLD] = p_says_nonexistent[NEW] = 0;
-@@ -914,7 +916,7 @@ intuit_diff_type (bool need_header, mode
+@@ -915,7 +917,7 @@ intuit_diff_type (bool need_header, mode
  		}
  	      else
  		{
@@ -169,7 +169,7 @@ diff -up patch-2.7.1/src/pch.c.selinux patch-2.7.1/src/pch.c
  		  if (! stat_errno[i])
  		    {
  		      if (lookup_file_id (&st[i]) == DELETE_LATER)
-@@ -953,7 +955,7 @@ intuit_diff_type (bool need_header, mode
+@@ -954,7 +956,7 @@ intuit_diff_type (bool need_header, mode
  			  if (cs)
  			    {
  			      if (version_get (p_name[i], cs, false, readonly,
@@ -178,7 +178,7 @@ diff -up patch-2.7.1/src/pch.c.selinux patch-2.7.1/src/pch.c
  				stat_errno[i] = 0;
  			      else
  				version_controlled[i] = 0;
-@@ -1006,7 +1008,7 @@ intuit_diff_type (bool need_header, mode
+@@ -1007,7 +1009,7 @@ intuit_diff_type (bool need_header, mode
        {
  	if (inname)
  	  {
@@ -187,7 +187,7 @@ diff -up patch-2.7.1/src/pch.c.selinux patch-2.7.1/src/pch.c
  	    if (inerrno || (instat.st_mode & S_IFMT) == file_type)
  	      maybe_reverse (inname, inerrno, inerrno || instat.st_size == 0);
  	  }
-@@ -1019,8 +1021,14 @@ intuit_diff_type (bool need_header, mode
+@@ -1020,8 +1022,14 @@ intuit_diff_type (bool need_header, mode
  	inerrno = stat_errno[i];
  	invc = version_controlled[i];
  	instat = st[i];
@@ -203,8 +203,8 @@ diff -up patch-2.7.1/src/pch.c.selinux patch-2.7.1/src/pch.c
  }
  
 diff -up patch-2.7.1/src/util.c.selinux patch-2.7.1/src/util.c
---- patch-2.7.1/src/util.c.selinux	2012-09-22 21:09:10.000000000 +0100
-+++ patch-2.7.1/src/util.c	2012-10-18 18:23:51.358951905 +0100
+--- patch-2.7.1/src/util.c.selinux	2012-09-22 22:09:10.000000000 +0200
++++ patch-2.7.1/src/util.c	2018-11-26 15:41:05.749151858 +0100
 @@ -294,6 +294,19 @@ set_file_attributes (char const *to, enu
  		S_ISLNK (mode) ? "symbolic link" : "file",
  		quotearg (to));
@@ -288,8 +288,8 @@ diff -up patch-2.7.1/src/util.c.selinux patch-2.7.1/src/util.c
 +  return errno;
  }
 diff -up patch-2.7.1/src/util.h.selinux patch-2.7.1/src/util.h
---- patch-2.7.1/src/util.h.selinux	2012-09-21 21:21:16.000000000 +0100
-+++ patch-2.7.1/src/util.h	2012-10-18 18:02:38.923626167 +0100
+--- patch-2.7.1/src/util.h.selinux	2012-09-21 22:21:16.000000000 +0200
++++ patch-2.7.1/src/util.h	2018-11-26 15:41:05.749151858 +0100
 @@ -45,7 +45,7 @@ char *parse_name (char const *, int, cha
  char *savebuf (char const *, size_t);
  char *savestr (char const *);
